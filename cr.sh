@@ -59,6 +59,13 @@ main() {
     echo "###################################################"
     
     local changed_charts=()
+    
+    echo "###################################################"
+    echo "Running lookup_changed_charts and print it."
+    kk="$(lookup_changed_charts "$latest_tag")"
+    echo "$kk"
+    echo "###################################################"
+    
     readarray -t changed_charts <<< "$(lookup_changed_charts "$latest_tag")"
 
     if [[ -n "${changed_charts[*]}" ]]; then
@@ -180,7 +187,6 @@ parse_command_line() {
 }
 
 install_chart_releaser() {
-    set -x
     if [[ ! -d "$RUNNER_TOOL_CACHE" ]]; then
         echo "Cache directory '$RUNNER_TOOL_CACHE' does not exist" >&2
         exit 1
@@ -201,26 +207,26 @@ install_chart_releaser() {
         echo 'Adding cr directory to PATH...'
         export PATH="$cache_dir:$PATH"
     fi
-    set +x
 }
 
 lookup_latest_tag() {
 
-    set -x
-    echo -e "\n###### BEGIN: lookup_latest_tag ######"
+    #set -x
+    echo -e "\n###### BEGIN: lookup_latest_tag ######" >&2
     git fetch --tags > /dev/null 2>&1
 
     if ! git describe --tags --abbrev=0 2> /dev/null; then
         git rev-list --max-parents=0 --first-parent HEAD
     fi
-    echo -e "###### END: lookup_latest_tag ######\n"
+    echo -e "###### END: lookup_latest_tag ######\n" >&2
 
     set +x
 }
 
 filter_charts() {
-    echo -e "\n###### BEGIN: filter_charts ######"
     set -x
+    echo -e "\n###### BEGIN: filter_charts ######" >&2
+    
     while read -r chart; do
         [[ ! -d "$chart" ]] && continue
         local file="$chart/Chart.yaml"
@@ -230,13 +236,13 @@ filter_charts() {
            echo "WARNING: $file is missing, assuming that '$chart' is not a Helm chart. Skipping." 1>&2
         fi
     done
-    echo -e "###### END: filter_charts ######\n"
+    echo -e "###### END: filter_charts ######\n" >&2
     set +x
 }
 
 lookup_changed_charts() {
     set -x
-    echo -e "\n###### BEGIN: lookup_changed_charts ######"
+    echo -e "\n###### BEGIN: lookup_changed_charts ######" >&2
     local commit="$1"
 
     local changed_files
@@ -246,9 +252,7 @@ lookup_changed_charts() {
     local fields="1-${depth}"
 
     cut -d '/' -f "$fields" <<< "$changed_files" | uniq | filter_charts
-    echo -e "###### END: lookup_changed_charts ######\n"
-
-    echo -e "###### END: lookup_changed_charts ######\n"
+    echo -e "###### END: lookup_changed_charts ######\n" >&2
     set +x
 }
 
