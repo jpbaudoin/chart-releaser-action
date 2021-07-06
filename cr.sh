@@ -54,6 +54,15 @@ main() {
     local latest_tag
     latest_tag=$(lookup_latest_tag)
     
+    
+    echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
+    echo "Commit: $(git rev-parse HEAD)"
+    git fetch --tags > /dev/null 2>&1
+
+    echo "Describe tags: $(git describe --tags --abbrev=0)"
+    echo "First Parent: $(git rev-list --max-parents=0 --first-parent HEAD)"
+
+    
     echo "###################################################"
     echo "Discovering changed charts since '$latest_tag'..."
     echo "###################################################"
