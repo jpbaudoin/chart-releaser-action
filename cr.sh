@@ -52,17 +52,17 @@ main() {
 
 
     
-    set -x
-    echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
-    echo "Commit: $(git rev-parse HEAD)"
-    git fetch --tags --unshallow
+#    set -x
+#    echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
+#    echo "Commit: $(git rev-parse HEAD)"
+#    git fetch --tags --unshallow
 
-    echo "Describe tags: $(git describe --tags --abbrev=0)"
-    echo "First Parent: $(git rev-list --max-parents=0 --first-parent HEAD)"
+#    echo "Describe tags: $(git describe --tags --abbrev=0)"
+#    echo "First Parent: $(git rev-list --max-parents=0 --first-parent HEAD)"
 
-    echo "###### END ####"
-    set +x
-    exit 0
+#    echo "###### END ####"
+#    set +x
+#    exit 0
     
     echo 'Looking up latest tag...'
     local latest_tag
