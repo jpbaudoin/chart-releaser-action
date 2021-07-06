@@ -50,18 +50,23 @@ main() {
     repo_root=$(git rev-parse --show-toplevel)
     pushd "$repo_root" > /dev/null
 
-    echo 'Looking up latest tag...'
-    local latest_tag
-    latest_tag=$(lookup_latest_tag)
+
     
-    
+    set -x
     echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
     echo "Commit: $(git rev-parse HEAD)"
-    git fetch --tags > /dev/null 2>&1
+    git fetch --tags
 
     echo "Describe tags: $(git describe --tags --abbrev=0)"
     echo "First Parent: $(git rev-list --max-parents=0 --first-parent HEAD)"
 
+    echo "###### END ####"
+    set +x
+    exit 0
+    
+    echo 'Looking up latest tag...'
+    local latest_tag
+    latest_tag=$(lookup_latest_tag)
     
     echo "###################################################"
     echo "Discovering changed charts since '$latest_tag'..."
