@@ -55,7 +55,7 @@ main() {
     set -x
     echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
     echo "Commit: $(git rev-parse HEAD)"
-    git fetch --tags
+    git fetch --tags --unshallow
 
     echo "Describe tags: $(git describe --tags --abbrev=0)"
     echo "First Parent: $(git rev-list --max-parents=0 --first-parent HEAD)"
