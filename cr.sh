@@ -55,8 +55,11 @@ main() {
     echo 'Looking up latest tag...'
     local latest_tag
     latest_tag=$(lookup_latest_tag)
-
+    
+    echo "###################################################"
     echo "Discovering changed charts since '$latest_tag'..."
+    echo "###################################################"
+    
     local changed_charts=()
     readarray -t changed_charts <<< "$(lookup_changed_charts "$latest_tag")"
 
@@ -204,16 +207,21 @@ install_chart_releaser() {
 }
 
 lookup_latest_tag() {
+
     set -x
+    echo -e "\n###### BEGIN: lookup_latest_tag ######"
     git fetch --tags > /dev/null 2>&1
 
     if ! git describe --tags --abbrev=0 2> /dev/null; then
         git rev-list --max-parents=0 --first-parent HEAD
     fi
+    echo -e "###### END: lookup_latest_tag ######\n"
+
     set +x
 }
 
 filter_charts() {
+    echo -e "\n###### BEGIN: filter_charts ######"
     set -x
     while read -r chart; do
         [[ ! -d "$chart" ]] && continue
@@ -224,11 +232,13 @@ filter_charts() {
            echo "WARNING: $file is missing, assuming that '$chart' is not a Helm chart. Skipping." 1>&2
         fi
     done
+    echo -e "###### END: filter_charts ######\n"
     set +x
 }
 
 lookup_changed_charts() {
     set -x
+    echo -e "\n###### BEGIN: lookup_changed_charts ######"
     local commit="$1"
 
     local changed_files
@@ -238,6 +248,9 @@ lookup_changed_charts() {
     local fields="1-${depth}"
 
     cut -d '/' -f "$fields" <<< "$changed_files" | uniq | filter_charts
+    echo -e "###### END: lookup_changed_charts ######\n"
+
+    echo -e "###### END: lookup_changed_charts ######\n"
     set +x
 }
 
